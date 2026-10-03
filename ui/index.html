@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>agent — coding agent</title>
+    <meta name="description" content="Minimal opencode-like coding agent UI">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="theme-8">
+<div id="app" class="shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <img class="logo" src="favicon.svg" alt="agent">
+            <div class="brand-text">
+                <div class="brand-name">agent</div>
+                <div class="brand-sub" id="brand-sub">connecting…</div>
+            </div>
+        </div>
+
+        <button id="new-session" class="btn-block">+ New session</button>
+        <div id="session-list" class="session-list"></div>
+
+        <div class="sidebar-foot">
+            <span id="health-dot" class="dot dot-off"></span>
+            <span id="health-text" class="txt-sm txt-muted">offline</span>
+            <span class="fx-1"></span>
+            <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">&#9881;</button>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="topbar-title" id="session-title">No session</div>
+                <div class="topbar-meta txt-xs txt-muted" id="topbar-meta"></div>
+            </div>
+            <div class="topbar-actions">
+                <button id="compact-btn" class="ghost-btn" title="Summarize older messages">Compact</button>
+                <button id="abort-btn" class="ghost-btn danger hidden" title="Stop the running turn">Stop</button>
+            </div>
+        </header>
+
+        <section id="messages" class="messages">
+            <div class="empty" id="empty-state">
+                <img src="favicon.svg" alt="" class="empty-logo">
+                <h2>Start a session</h2>
+                <p class="txt-muted">Create a session, then ask the agent to build or change files in the workspace.</p>
+            </div>
+            <div id="thread" class="thread"></div>
+        </section>
+
+        <div id="notices" class="notices"></div>
+
+        <form id="composer" class="composer" autocomplete="off">
+            <textarea id="prompt" rows="1" placeholder="Ask the agent to build or change something…"></textarea>
+            <button id="send-btn" type="submit" class="send-btn" title="Send">Send</button>
+        </form>
+    </main>
+</div>
+
+<dialog id="permission-dialog" class="modal">
+    <form method="dialog" class="modal-inner">
+        <h3>Permission required</h3>
+        <p class="txt-sm txt-muted">The agent wants to run a tool:</p>
+        <div class="perm-tool" id="perm-tool"></div>
+        <pre class="perm-args" id="perm-args"></pre>
+        <div class="modal-actions">
+            <button value="deny" class="ghost-btn danger" id="perm-deny">Deny</button>
+            <button value="allow" class="btn-block" id="perm-allow">Allow</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="settings-dialog" class="modal">
+    <form method="dialog" class="modal-inner">
+        <h3>Settings</h3>
+        <label class="txt-sm" for="token-input">Bearer token (leave empty if auth is disabled)</label>
+        <input id="token-input" type="password" placeholder="token">
+        <div class="modal-actions">
+            <button value="cancel" class="ghost-btn">Cancel</button>
+            <button value="save" class="btn-block" id="token-save">Save</button>
+        </div>
+    </form>
+</dialog>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
