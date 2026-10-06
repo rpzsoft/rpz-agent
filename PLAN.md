@@ -42,7 +42,7 @@ com.rpzsoft.agent.cli        AgentServer main (config → start HTTP)
 | `SandboxProvider` | run commands / serve app | `ProcessSandboxProvider` | process/docker/firecracker |
 | `SecretMasker` | mask secrets in output | `NoopMasker` | `SecretService.mask` |
 | `UsageSink` | model/tool usage + cost hooks | `NoopUsageSink` (+ `LoggingUsageSink`) | quota/usage/billing/audit |
-| `AgentConfig` | typed settings | `ConfigRegistry` (properties) | same keys (`rapps.agent.*`) |
+| `AgentConfig` | typed settings | `ConfigRegistry` (properties) | same keys (`rpzag.*`) |
 
 The core never imports `web`, `store`, `billing`, `quota`, `audit`, `secrets`,
 `auth`, `apps`, `git`, `hosting`, `preview`, or `Server`.
@@ -87,9 +87,9 @@ Netty HTTP/1.1 + SSE; JSON via `common.Json`. Base `http://127.0.0.1:4096`.
 | GET | `/event` | SSE stream: `message.start/delta/end`, `tool.start/end`, `permission.request`, `error`, `session.*` |
 | GET | `/health` | liveness |
 
-Auth: optional bearer token (`rapps.agent.http.token`), off by default for local use.
+Auth: optional bearer token (`rpzag.http.token`), off by default for local use.
 Config via `app.properties` on the classpath or `--config <file>`; keys keep the
-`rapps.agent.*` shape for familiarity.
+`rpzag.*` shape for familiarity.
 
 ## Build phases (each compiles/tests standalone)
 

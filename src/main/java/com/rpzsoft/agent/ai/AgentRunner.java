@@ -336,7 +336,7 @@ public class AgentRunner {
         int emptyAttempts = 0;
         long runStart = System.currentTimeMillis();
         for (int turn = 0; !session.aborted; turn++) {
-            int maxTurns = intValue("rapps.agent.maxTurns", 24);
+            int maxTurns = intValue("rpzag.maxTurns", 24);
             if (maxTurns > 0 && turn >= maxTurns) {
                 events.publish(sessionId, event("error", "sessionId", sessionId,
                         "message", "Reached the " + maxTurns + "-turn limit for this run. "
@@ -631,8 +631,8 @@ public class AgentRunner {
      */
     private AssistantResult callModel(Json messages, AgentSession session, ToolRegistry runTools)
             throws Exception {
-        int retries = intValue("rapps.agent.model.retries", 2);
-        long baseBackoff = longValue("rapps.agent.model.retry.backoffMs", 1000L);
+        int retries = intValue("rpzag.model.retries", 2);
+        long baseBackoff = longValue("rpzag.model.retry.backoffMs", 1000L);
         int maxAttempts = Math.max(1, retries + 1);
 
         AssistantResult result = null;
@@ -782,7 +782,7 @@ public class AgentRunner {
                     "arguments", args.toString());
             pendingPermissions.put(permissionId, request);
             events.publish(sessionId, request);
-            boolean allowed = gate.await(permissionId, longValue("rapps.agent.permissions.timeoutMs", 120000L));
+            boolean allowed = gate.await(permissionId, longValue("rpzag.permissions.timeoutMs", 120000L));
             pendingPermissions.remove(permissionId);
             if (!allowed) {
                 appendToolMessage(sessionId, messages, call, "ERROR: permission denied by user");

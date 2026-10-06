@@ -36,51 +36,51 @@ public class ToolLimits {
     }
 
     public int readWindowLines() {
-        return intValue("rapps.agent.tools.read.windowLines", 400);
+        return intValue("rpzag.tools.read.windowLines", 400);
     }
 
     public int readMaxBytes() {
-        return intValue("rapps.agent.tools.read.maxBytes", 120 * 1024);
+        return intValue("rpzag.tools.read.maxBytes", 120 * 1024);
     }
 
     public int bashMaxBytes() {
-        return intValue("rapps.agent.tools.bash.maxBytes", 12000);
+        return intValue("rpzag.tools.bash.maxBytes", 12000);
     }
 
     public boolean bashSpill() {
-        return booleanValue("rapps.agent.tools.bash.spill", true);
+        return booleanValue("rpzag.tools.bash.spill", true);
     }
 
     public int bashSpillInlineBytes() {
-        return intValue("rapps.agent.tools.bash.spillInlineBytes", 4000);
+        return intValue("rpzag.tools.bash.spillInlineBytes", 4000);
     }
 
     public int bashRetention() {
-        return intValue("rapps.agent.tools.bash.retention", 20);
+        return intValue("rpzag.tools.bash.retention", 20);
     }
 
     public int historyToolBytes() {
-        return intValue("rapps.agent.history.toolBytes", 12000);
+        return intValue("rpzag.history.toolBytes", 12000);
     }
 
     public int grepMaxResults() {
-        return intValue("rapps.agent.tools.grep.maxResults", 100);
+        return intValue("rpzag.tools.grep.maxResults", 100);
     }
 
     public int grepLineChars() {
-        return intValue("rapps.agent.tools.grep.maxLineChars", 160);
+        return intValue("rpzag.tools.grep.maxLineChars", 160);
     }
 
     public int globMaxResults() {
-        return intValue("rapps.agent.tools.glob.maxResults", 120);
+        return intValue("rpzag.tools.glob.maxResults", 120);
     }
 
     public int listMaxEntries() {
-        return intValue("rapps.agent.tools.list.maxEntries", 200);
+        return intValue("rpzag.tools.list.maxEntries", 200);
     }
 
     public String direction() {
-        return cfg.getProperty("rapps.agent.tools.truncateDirection", "both");
+        return cfg.getProperty("rpzag.tools.truncateDirection", "both");
     }
 
     private int intValue(String key, int fallback) {

@@ -14,7 +14,7 @@ context compaction, an HTTP+SSE API and a small opencode-like web UI.
 | `sandbox` | `SandboxProvider`, `Sandbox`, `ExecResult`, `ProcessSandboxProvider`, `SandboxManager` (per-session workspace binding) |
 | `workspace` | `FileWorkspace` (+ `Local` impl), `WorkspaceProvider` (+ `Local`), `CheckpointService` (JGit) |
 | `session` | `SessionStore` (+ `FileStore` impl) |
-| `http` | `AgentHttpServer` — Netty HTTP/1.1 + SSE, JSON via `common.Json`, optional bearer token, static UI serving (`/` from classpath `ui/` or `rapps.agent.ui.dir`); plus the legacy HTTP client classes pulled in by `Json` (`HttpClient`, `HttpMethod`, …) |
+| `http` | `AgentHttpServer` — Netty HTTP/1.1 + SSE, JSON via `common.Json`, optional bearer token, static UI serving (`/` from classpath `ui/` or `rpzag.ui.dir`); plus the legacy HTTP client classes pulled in by `Json` (`HttpClient`, `HttpMethod`, …) |
 | `cli` | `AgentServer` main (config -> start HTTP) |
 | `ui` | dependency-free vanilla-JS coding-agent front end (`index.html`, `css/app.css`, `js/app.js`) served at `/` |
 
@@ -32,24 +32,24 @@ java -jar target/agent.jar --host 10.1.1.10 --port 5011 --workspace . --data dat
 CLI flags: `--host`, `--port`, `--workspace`, `--data`, `--config <file>`,
 `--help`. Configuration is classpath `app.properties` (see
 `src/main/resources/app.properties`) overridden by `--config`; keys use the
-`rapps.agent.*` prefix. The UI in `ui/` is copied into the jar at build time
-(classpath `/ui`); set `rapps.agent.ui.dir=ui` to serve the source directory
+`rpzag.*` prefix. The UI in `ui/` is copied into the jar at build time
+(classpath `/ui`); set `rpzag.ui.dir=ui` to serve the source directory
 directly during UI development (no rebuild needed).
 
 | Key | Default | Meaning |
 |---|---|---|
-| `rapps.agent.http.host` / `port` | `127.0.0.1` / `5011` | bind address |
-| `rapps.agent.http.token` | empty | optional bearer token (off for local use) |
-| `rapps.agent.ui.dir` | empty | serve UI files from this directory instead of classpath `/ui` |
-| `rapps.agent.workspace` | `.` | base directory; sessions may use a subdirectory |
-| `rapps.agent.data` | `data` | session store directory |
-| `rapps.agent.maxTurns` | `24` | model turns per run |
-| `rapps.agent.model.provider` | `mock` | `mock` or any OpenAI-compatible endpoint |
-| `rapps.agent.model.baseUrl` / `apiKey` / `name` / `maxTokens` | — | provider settings |
-| `rapps.agent.model.retries` / `retry.backoffMs` | `2` / `1000` | transient-failure retries |
-| `rapps.agent.permissions.<tool>` | `bash=ask`, rest `allow` | `allow`/`ask`/`deny` |
-| `rapps.agent.permissions.timeoutMs` | `120000` | permission wait before auto-deny |
-| `rapps.agent.tools.*`, `rapps.agent.history.toolBytes` | see file | output truncation limits |
+| `rpzag.http.host` / `port` | `127.0.0.1` / `5011` | bind address |
+| `rpzag.http.token` | empty | optional bearer token (off for local use) |
+| `rpzag.ui.dir` | empty | serve UI files from this directory instead of classpath `/ui` |
+| `rpzag.workspace` | `.` | base directory; sessions may use a subdirectory |
+| `rpzag.data` | `data` | session store directory |
+| `rpzag.maxTurns` | `24` | model turns per run |
+| `rpzag.model.provider` | `mock` | `mock` or any OpenAI-compatible endpoint |
+| `rpzag.model.baseUrl` / `apiKey` / `name` / `maxTokens` | — | provider settings |
+| `rpzag.model.retries` / `retry.backoffMs` | `2` / `1000` | transient-failure retries |
+| `rpzag.permissions.<tool>` | `bash=ask`, rest `allow` | `allow`/`ask`/`deny` |
+| `rpzag.permissions.timeoutMs` | `120000` | permission wait before auto-deny |
+| `rpzag.tools.*`, `rpzag.history.toolBytes` | see file | output truncation limits |
 
 ## HTTP API
 
@@ -59,7 +59,7 @@ Base `http://127.0.0.1:5011`.
 |---|---|---|
 | GET | `/` | bundled web UI (`index.html`); `/css/*`, `/js/*`, `/favicon.svg` are served unauthenticated |
 | GET | `/app` | agent info: version, cwd, model, tools |
-| GET | `/config` | effective `rapps.agent.*` config |
+| GET | `/config` | effective `rpzag.*` config |
 | GET | `/health` | liveness |
 | GET | `/session` | list sessions |
 | POST | `/session` | create session `{title?, directory?}` |
@@ -125,10 +125,10 @@ Implement `com.rpzsoft.agent.ai.Tool` (`name`/`description`/`parameters`/`execut
 and register it in `com.rpzsoft.agent.ai.tools.DefaultTools` (or your own registry).
 Tools must use `ToolContext` only (workspace, sandboxes, events, masker) — never
 import host-application classes. Permission defaults come from
-`rapps.agent.permissions.<tool>` (unknown tools default to `allow`).
+`rpzag.permissions.<tool>` (unknown tools default to `allow`).
 
 ## Notes
 
 - `server/` remains untouched and independently green.
 - Store defaults to the JSON `FileSessionStore`; checkpoints use JGit (no git
-  binary). Data lives under `rapps.agent.data`.
+  binary). Data lives under `rpzag.data`.

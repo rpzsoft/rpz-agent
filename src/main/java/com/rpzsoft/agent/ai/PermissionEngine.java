@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * deployment. Extensions can register tools (and their fallback modes) while
  * agent runs are already in flight, so the map must stay thread-safe.
  *
- * Configured with `rapps.agent.permissions.&lt;tool&gt;`.
+ * Configured with `rpzag.permissions.&lt;tool&gt;`.
  */
 public class PermissionEngine {
 
@@ -38,7 +38,7 @@ public class PermissionEngine {
     }
 
     private static String config(String tool) {
-        return ConfigRegistry.getInstance().getProperty("rapps.agent.permissions." + tool);
+        return ConfigRegistry.getInstance().getProperty("rpzag.permissions." + tool);
     }
 
     private static Mode mode(String value, Mode fallback) {
@@ -54,7 +54,7 @@ public class PermissionEngine {
         Mode m = modes.get(tool);
         if (m != null) return m;
         // tools registered after startup (MCP, custom) are governed by
-        // rapps.agent.permissions.<tool>; unknown tools keep the permissive default
+        // rpzag.permissions.<tool>; unknown tools keep the permissive default
         return mode(config(tool), Mode.ALLOW);
     }
 

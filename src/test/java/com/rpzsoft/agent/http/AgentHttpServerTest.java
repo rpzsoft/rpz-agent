@@ -81,7 +81,7 @@ public class AgentHttpServerTest {
 
         FullHttpResponse config = call(HttpMethod.GET, "/config", null);
         assertEquals(HttpResponseStatus.OK, config.status());
-        assertTrue(content(config).contains("rapps.agent."));
+        assertTrue(content(config).contains("rpzag."));
     }
 
     @Test

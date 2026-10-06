@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Offline model used when {@code rapps.agent.model.provider=mock}. It makes one
+ * Offline model used when {@code rpzag.model.provider=mock}. It makes one
  * deterministic tool call (list the workspace) and then replies with an echo of
  * the prompt, so the whole loop - context, tools, persistence, checkpoints -
  * can be exercised without an API key. It assumes nothing about the project.
@@ -49,7 +49,7 @@ public class MockModelClient implements ModelClient {
                     + (lastUser == null || lastUser.trim().isEmpty()
                     ? "Send a request and I will echo it."
                     : "You said: \"" + shorten(lastUser) + "\". ")
-                    + "Set rapps.agent.model.provider to an OpenAI-compatible endpoint for real edits.";
+                    + "Set rpzag.model.provider to an OpenAI-compatible endpoint for real edits.";
             completionChars = message.length();
             text(stream, message);
         }

@@ -81,7 +81,7 @@ public class AgentHttpServer {
         this.model = model;
         this.workspaceRoot = workspaceRoot;
         this.token = token == null ? "" : token.trim();
-        String uiProp = ConfigRegistry.getInstance().getProperty("rapps.agent.ui.dir", "");
+        String uiProp = ConfigRegistry.getInstance().getProperty("rpzag.ui.dir", "");
         File configured = uiProp == null || uiProp.trim().isEmpty() ? null : new File(uiProp.trim());
         this.uiDir = configured != null && configured.isDirectory() ? configured.getAbsoluteFile() : null;
     }
@@ -278,7 +278,7 @@ public class AgentHttpServer {
             ConfigRegistry cfg = ConfigRegistry.getInstance();
             Json values = new Json();
             for (String key : cfg.stringPropertyNames()) {
-                if (key.startsWith("rapps.agent.")) values.put(key, cfg.getProperty(key));
+                if (key.startsWith("rpzag.")) values.put(key, cfg.getProperty(key));
             }
             Json out = json("provider", model.provider(), "model", model.model(),
                     "cwd", workspaceRoot.getAbsolutePath());
@@ -409,7 +409,7 @@ public class AgentHttpServer {
     }
 
     /**
-     * Serves the bundled UI (or an external {@code rapps.agent.ui.dir}). Returns
+     * Serves the bundled UI (or an external {@code rpzag.ui.dir}). Returns
      * false when the request does not name an existing asset so normal API
      * routing can continue.
      */

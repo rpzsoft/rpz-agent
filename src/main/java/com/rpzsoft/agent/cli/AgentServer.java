@@ -14,7 +14,8 @@ import com.rpzsoft.agent.common.LoggingUsageSink;
 import com.rpzsoft.agent.common.SecretMasker;
 import com.rpzsoft.agent.common.UsageSink;
 import com.rpzsoft.agent.http.AgentHttpServer;
-import com.rpzsoft.agent.sandbox.ProcessSandboxProvider;
+import com.rpzsoft.agent.sandbox.ChrootSandboxProvider;
+import com.rpzsoft.agent.sandbox.SandboxProvider;
 import com.rpzsoft.agent.sandbox.SandboxManager;
 import com.rpzsoft.agent.session.SessionStore;
 import com.rpzsoft.agent.workspace.CheckpointService;
@@ -61,18 +62,20 @@ public final class AgentServer {
         }
 
         File workspaceRoot = new File(a.workspace != null ? a.workspace
-                : cfg.getProperty("rapps.agent.workspace", ".")).getAbsoluteFile();
+                : cfg.getProperty("rpzag.workspace", ".")).getAbsoluteFile();
         File dataRoot = new File(a.data != null ? a.data
-                : cfg.getProperty("rapps.agent.data", "data")).getAbsoluteFile();
-        String host = a.host != null ? a.host : cfg.getProperty("rapps.agent.http.host", "127.0.0.1");
+                : cfg.getProperty("rpzag.data", "data")).getAbsoluteFile();
+        String host = a.host != null ? a.host : cfg.getProperty("rpzag.http.host", "127.0.0.1");
         int port = a.port > 0 ? a.port
-                : intValue(cfg.getProperty("rapps.agent.http.port"), 5011);
-        String token = cfg.getProperty("rapps.agent.http.token", "");
-        long idleMs = longValue(cfg.getProperty("rapps.agent.sandbox.idleMs"), 600000L);
+                : intValue(cfg.getProperty("rpzag.http.port"), 5011);
+        String token = cfg.getProperty("rpzag.http.token", "");
+        long idleMs = longValue(cfg.getProperty("rpzag.sandbox.idleMs"), 600000L);
+        String procMode = cfg.getProperty("rpzag.sandbox.proc", "deny");
 
         SessionStore store = new SessionStore.FileStore(new File(dataRoot, "sessions"));
         EventBus bus = new EventBus();
-        SandboxManager sandboxes = new SandboxManager(new ProcessSandboxProvider(),
+        SandboxProvider provider = new ChrootSandboxProvider(procMode);
+        SandboxManager sandboxes = new SandboxManager(provider,
                 new FileWorkspace.Local(workspaceRoot), bus, idleMs);
         CheckpointService checkpoints = new CheckpointService();
         ToolRegistry tools = DefaultTools.registry();
@@ -98,20 +101,20 @@ public final class AgentServer {
             }
         }, "agent-shutdown"));
 
-        logger.info("agent ready: http://{}:{}/ (workspace={}, provider={})",
-                host, running.port(), workspaceRoot, model.provider());
+        logger.info("agent ready: http://{}:{}/ (workspace={}, provider={}, sandbox={})",
+                host, running.port(), workspaceRoot, model.provider(), provider.name());
         server.awaitTermination();
     }
 
     static ModelClient buildModel(ConfigRegistry cfg) {
-        String provider = cfg.getProperty("rapps.agent.model.provider", "mock");
+        String provider = cfg.getProperty("rpzag.model.provider", "mock");
         if (provider == null || provider.trim().isEmpty() || "mock".equalsIgnoreCase(provider.trim())) {
             return new MockModelClient();
         }
-        String baseUri = cfg.getProperty("rapps.agent.model.baseUrl", "https://api.openai.com/v1");
-        String apiKey = cfg.getProperty("rapps.agent.model.apiKey", "");
-        String name = cfg.getProperty("rapps.agent.model.name", "gpt-4o-mini");
-        int maxTokens = intValue(cfg.getProperty("rapps.agent.model.maxTokens"), 8192);
+        String baseUri = cfg.getProperty("rpzag.model.baseUrl", "https://api.openai.com/v1");
+        String apiKey = cfg.getProperty("rpzag.model.apiKey", "");
+        String name = cfg.getProperty("rpzag.model.name", "gpt-4o-mini");
+        int maxTokens = intValue(cfg.getProperty("rpzag.model.maxTokens"), 8192);
         return new OpenAiModelClient(baseUri.trim(), apiKey, name.trim(), maxTokens);
     }
 
