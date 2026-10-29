@@ -1,0 +1,11 @@
+#!/bin/bash
+
+OPT="--network localnet"
+
+if [[ $1 == "web" ]]; then
+	OPT=""
+fi;
+
+docker run --rm -it $OPT -v $(pwd):/work -v /opt/software/ai/config.agent:/home/node  -v /opt/software/ai/xdg-open:/usr/local/bin/xdg-open  -u "$(id -u):$(id -g)" -p 4097:4096  aiagent /bin/bash
+
+# OPENCODE_ENABLE_PARALLEL=1  OPENCODE_DISABLE_MODELS_FETCH=1 opencode web --hostname 0.0.0.0
